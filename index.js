@@ -57,6 +57,10 @@
       this.options.labelledBy = options.labelledBy;
     }
 
+    if (options.trackMargin) {
+      this.options.trackMargin = options.trackMargin;
+    }
+
     for (var key in rangeValues) {
       this.options[key] = options[key];
       if (typeof this.options[key] === 'number' && isNaN(this.options[key]) === false) {
@@ -167,7 +171,19 @@
 
     this.handle = document.createElement('div');
     this.handle.className = this.options.classNames.handle;
-    this.track.appendChild(this.handle);
+
+    if (this.options.trackMargin){
+        this.trackMargin = document.createElement('div');
+        this.trackMargin.style.margin = '0 8.33%';
+        this.trackMargin.style.position = 'relative';
+
+        this.track.appendChild(this.trackMargin);
+        this.trackMargin.appendChild(this.handle);
+    }
+    else {
+        this.track.appendChild(this.handle);
+    }
+
 
     // Style the elements before inserting them in the document.
     this.track.style.position = 'relative';
@@ -210,27 +226,15 @@
    * @param {KeyboardEvent} event
    */
   Slider.prototype.handleContainerKeyDown_ = function(event) {
-    // Left or down.
-    if (event.keyCode == 37 || event.keyCode == 40) {
+    // Left, down or page down.
+    if (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 33) {
       this.stepDown_();
       event.preventDefault();
     }
 
-    // Right or up.
-    if (event.keyCode == 39 || event.keyCode == 38) {
+    // Right, up or page up.
+    if (event.keyCode == 39 || event.keyCode == 40 || event.keyCode == 34) {
       this.stepUp_();
-      event.preventDefault();
-    }
-
-    // Page down.
-    if (event.keyCode == 34) {
-      this.setPercentage_(this.percentage - 10);
-      event.preventDefault();
-    }
-
-    // Page up.
-    if (event.keyCode == 33) {
-      this.setPercentage_(this.percentage + 10);
       event.preventDefault();
     }
 
